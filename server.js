@@ -16,11 +16,7 @@ const app = express();
 const server = http.createServer(app);
 
 // Configure CORS properly
-app.use(cors({
-    origin: process.env.CLIENT_SIDE,
-    methods: ["GET", "POST"],
-    credentials: true,
-}));
+app.use(cors('*'));
 
 // Socket.io setup with CORS
 const io = new Server(server, {
