@@ -6,7 +6,7 @@ export const CheckUser = async (req, res, next) => {
         const { formData } = req.body;
         const Existed = await User.findOne({ Email: formData.Email })
         if (Existed) {
-            return res.status(200).json({ message: "already Existed", Data: Existed })
+            return res.status(200).json({ message: "already Existed", Data: Existed , success : false})
         }
         else {
             return next()
@@ -29,7 +29,7 @@ export const VerifyUsername = async (req, res, next) => {
 
         const Existed = await User.findOne({ Username : formData.Username });
         if (Existed) {
-            return res.status(200).json({ message: "Username already exists", Data: Existed });
+            return res.status(200).json({ message: "Username already exists", Data: Existed , success : false });
         } else {
             return next()
         }
@@ -47,7 +47,7 @@ export const AddUser = async (req, res, next) => {
         const UserData = { Username: formData.Username, Email: formData.Email, Password: formData.Password }
         const SaveData = new User(UserData)
         await SaveData.save()
-        return res.status(200).json({ success: true })
+        return res.status(200).json({message : "user created successfully" ,  success: true })
     }
     catch (error) {
         return res.status(404).json({ message: error })
