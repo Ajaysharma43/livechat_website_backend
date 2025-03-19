@@ -3,10 +3,12 @@ import cors from "cors";
 import UploadFileRoute from "./routes/AddFileRoute/AddFIleRoute.js";
 import AuthRoute from "./routes/Authroutes/AuthRoute.js"
 import TokenVerify from './routes/TokenVerify/TokenVerify.js'
+import Messages from "./schemma/messagesSchemma.js";
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
 import DBConnection from "./dbconnection/dbconnection.js";
+import { log } from "console";
 
 dotenv.config();
 const app = express();
@@ -16,7 +18,7 @@ const server = http.createServer(app);
 
 // Configure CORS properly
 app.use(cors({
-    origin: process.env.CLIENT_SIDE || "http://localhost:3000", // Adjust as needed
+    origin: process.env.CLIENT_SIDE,
     methods: ["GET", "POST"],
     credentials: true,
 }));
@@ -39,10 +41,24 @@ app.use('/Upload', UploadFileRoute);
 app.use('/Auth' , AuthRoute)
 app.use('/verify' , TokenVerify)
 // WebSocket events
-io.on('connection', (socket) => {
+io.on('connection', async(socket) => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('sendMessage', (data) => {
+    try{
+        const message = await Messages.find().sort({ timestamp: 1 });
+        socket.emit('previousMessages',message)
+    }
+    catch(error)
+    {
+        console.log(error)
+    }
+
+    socket.on('sendMessage', async(data) => {
+        console.log(data)
+        const {text , sender} = data;
+        const MessageData = {text : text , sender : sender}
+        const SaveMessage = new Messages(MessageData)
+        await SaveMessage.save()
         io.emit('receiveMessage', data);
     });
 
