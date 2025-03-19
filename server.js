@@ -1,9 +1,11 @@
 import express from "express";
 import cors from "cors";
 import UploadFileRoute from "./routes/AddFileRoute/AddFIleRoute.js";
+import AuthRoute from "./routes/Authroutes/AuthRoute.js"
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
+import DBConnection from "./dbconnection/dbconnection.js";
 
 dotenv.config();
 const app = express();
@@ -29,9 +31,11 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+DBConnection()
+
 // Routes
 app.use('/Upload', UploadFileRoute);
-
+app.use('/Auth' , AuthRoute)
 // WebSocket events
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
