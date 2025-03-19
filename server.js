@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import UploadFileRoute from "./routes/AddFileRoute/AddFIleRoute.js";
 import AuthRoute from "./routes/Authroutes/AuthRoute.js"
+import TokenVerify from './routes/TokenVerify/TokenVerify.js'
 import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
@@ -36,6 +37,7 @@ DBConnection()
 // Routes
 app.use('/Upload', UploadFileRoute);
 app.use('/Auth' , AuthRoute)
+app.use('/verify' , TokenVerify)
 // WebSocket events
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
