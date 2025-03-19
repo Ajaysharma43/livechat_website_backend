@@ -4,7 +4,7 @@ export const TokenVerifyMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
         const {RefreshToken} = req.body;
-
+        
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ message: "Access token is required" });
         }
