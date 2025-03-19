@@ -8,7 +8,6 @@ import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
 import DBConnection from "./dbconnection/dbconnection.js";
-import { log } from "console";
 
 dotenv.config();
 const app = express();
@@ -62,7 +61,7 @@ io.on('connection', async(socket) => {
         io.emit('receiveMessage', data);
     });
 
-    socket.on('typing', (username) => {
+    socket.on('typing', (username) => { 
         socket.broadcast.emit("userTyping", username);
     });
 
