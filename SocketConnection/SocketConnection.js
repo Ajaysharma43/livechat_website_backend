@@ -4,7 +4,6 @@ const SocketConnection = (io) => {
     io.on('connection', (socket) => {
         console.log(`User connected: ${socket.id}`);
 
-        // Handle joining a room
         socket.on('joinRoom', async (roomid) => {
             console.log(`Socket ${socket.id} joined the room: ${roomid}`);
             socket.join(roomid);
@@ -21,11 +20,18 @@ const SocketConnection = (io) => {
                 console.log(error);
             }
 
-            // Notify others in the room
             socket.to(roomid).emit('userJoined', { userId: socket.id, room: roomid });
         });
 
-        // Handle sending a message
+        socket.on('typing', ({ room, username }) => {
+            socket.to(room).emit('userTyping', username);
+        });
+
+        // Handle stop typing event
+        socket.on('stopTyping', ({ room, username }) => {
+            socket.to(room).emit('userStoppedTyping', username);
+        });
+
         socket.on('sendMessage', async (data) => {
             const { text, sender, room } = data;
 
@@ -42,7 +48,6 @@ const SocketConnection = (io) => {
             }
         });
 
-        // Handle leaving a room
         socket.on('leaveRoom', (roomid) => {
             console.log(`Socket ${socket.id} left the room: ${roomid}`);
             socket.leave(roomid);
