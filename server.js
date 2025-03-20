@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import http from "http";
 import { Server } from "socket.io";
 import DBConnection from "./dbconnection/dbconnection.js";
+import SocketConnection from "./SocketConnection/SocketConnection.js";
 
 dotenv.config();
 const app = express();
@@ -36,39 +37,7 @@ app.use('/Upload', UploadFileRoute);
 app.use('/Auth' , AuthRoute)
 app.use('/verify' , TokenVerify)
 // WebSocket events
-io.on('connection', async(socket) => {
-    console.log(`User connected: ${socket.id}`);
-
-    try{
-        const message = await Messages.find().sort({ timestamp: 1 });
-        socket.emit('previousMessages',message)
-    }
-    catch(error)
-    {
-        console.log(error)
-    }
-
-    socket.on('sendMessage', async(data) => {
-        console.log(data)
-        const {text , sender} = data;
-        const MessageData = {text : text , sender : sender}
-        const SaveMessage = new Messages(MessageData)
-        await SaveMessage.save()
-        io.emit('receiveMessage', data);
-    });
-
-    socket.on('typing', (username) => { 
-        socket.broadcast.emit("userTyping", username);
-    });
-
-    socket.on('stopTyping', (username) => {
-        socket.broadcast.emit("userStoppedTyping", username);
-    });
-
-    socket.on("disconnect", () => {
-        console.log(`User disconnected: ${socket.id}`);
-    });
-});
+SocketConnection(io)
 
 // Start only one server on port 4000
 const PORT = process.env.PORT || 4000;
