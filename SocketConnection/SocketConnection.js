@@ -14,7 +14,7 @@ const SocketConnection = (io) => {
                     roomMessages = new Messages({ room: roomid, Data: [] });
                     await roomMessages.save();
                 }
-
+                
                 socket.emit('previousMessages', roomMessages.Data);
             } catch (error) {
                 console.log(error);
