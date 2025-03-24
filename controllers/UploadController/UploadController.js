@@ -50,7 +50,7 @@ export const Uploadfile = (req, res, next) => {
 export const CheckUpload = async(req, res, next) => {
     try {
         const folderName = req.query.folderName;
-        const [files] = await bucket.getFiles({ prefix: `${folderName}/` });
+        const [files] = await bucket.getFiles({ prefix: `${folderName}/`} );
 
         if (!files.length) {
             return res.status(404).json({ message: "No files found in this folder" });
