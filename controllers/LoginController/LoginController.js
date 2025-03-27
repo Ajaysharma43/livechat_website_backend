@@ -37,7 +37,7 @@ export const GenerateToken = async (req, res, next) => {
             return res.status(500).json({ message: "JWT_SECRET is not defined in environment variables" });
         }
 
-        const Payload = { id: Authorize._id };
+        const Payload = { id: Authorize._id , Role : Authorize.Role};
         const AccessToken = jwt.sign(Payload, process.env.JWT_SECRET, { expiresIn: '2h' });
         const RefreshToken = jwt.sign(Payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
